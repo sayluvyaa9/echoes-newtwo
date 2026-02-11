@@ -160,19 +160,7 @@
   else if (mode === "budget") calculateBudget();
   else if (mode === "discount") calculateDiscount();
 }
-
-// ราคาพร้อมเติม
-const topupDiscount = {
-  66: { base: 35, "3%": 31, "10%": 29, topup: 60 },
-  203: { base: 105, "3%": 88, "10%": 82, topup: 185 },
-  335: { base: 150, "3%": 146, "10%": 140, topup: 305 },
-  759: { base: 340, "3%": 295, "10%": 275, topup: 690 },
-  2227: { base: null, "3%": 880, "10%": 800, topup: 2025 },
-  3663: { base: null, "3%": 1460, "10%": 1370, topup: 3330 },
-  7249: { base: null, "3%": 2920, "10%": 2740, topup: 6590 }
-};
-
-// ราคาพรีออเดอร์
+// ราคาพรีออเดอร์ (ใช้เฉพาะโหมดส่วนลด)
 const preorderDiscount = {
   66: { base: 30, "3%": 29, "10%": 27, topup: 60 },
   203: { base: 85, "3%": 82, "10%": 77, topup: 185 },
@@ -193,12 +181,12 @@ function createRow() {
   let packSelect = document.createElement("select");
   packSelect.className = "form-select";
 
-  // เพิ่มตัวเลือกเริ่มต้น "เลือกแพ็ก"
+  // เพิ่มตัวเลือกเริ่มต้น "เลือกแพ็ก" (สามารถเลือกกลับได้)
   let defaultOpt = document.createElement("option");
   defaultOpt.value = "";
   defaultOpt.textContent = "เลือกแพ็ก";
   defaultOpt.selected = true;
-  defaultOpt.disabled = false;
+  defaultOpt.disabled = false;   // ✅ ให้เลือกกลับได้
   packSelect.appendChild(defaultOpt);
 
   discountPacks.forEach(p=>{
@@ -232,20 +220,8 @@ function addDiscountRow() {
 // สร้าง 5 แถวเริ่มต้น
 for (let i=0;i<5;i++) addDiscountRow();
 
-// แสดง/ซ่อนตารางส่วนลด
-document.getElementById("modeSelect").addEventListener("change", function() {
-  if (this.value === "discount") {
-    document.getElementById("discountTable").style.display = "block";
-    document.getElementById("generalInput").style.display = "none";
-  } else {
-    document.getElementById("discountTable").style.display = "none";
-    document.getElementById("generalInput").style.display = "block";
-  }
-});
-
-// ฟังก์ชันคำนวณโหมดส่วนลด
+// ฟังก์ชันคำนวณโหมดส่วนลด (ใช้เฉพาะ preorderDiscount)
 function calculateDiscount() {
-  let priceType = "topup"; // หรือเพิ่มตัวเลือกให้ผู้ใช้เลือกว่าจะใช้ราคาพร้อมเติมหรือพรีออเดอร์
   let rows = document.querySelectorAll("#discountRows tr");
   let results = [];
 
@@ -255,8 +231,7 @@ function calculateDiscount() {
     pack = parseInt(pack);
 
     let rate = r.children[1].querySelector("select").value;
-    let dataset = (priceType==="topup"?topupDiscount:preorderDiscount);
-    let data = dataset[pack];
+    let data = preorderDiscount[pack];
     if (!data) return;
 
     let basePrice = data.base;
@@ -297,11 +272,13 @@ function calculateDiscount() {
 
   document.getElementById("result").innerHTML = html;
 }
+
   
 </script>
 
 </body>
 </html>
+
 
 
 
