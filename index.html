@@ -275,18 +275,22 @@ function calculateDiscount() {
 }
   document.getElementById("modeSelect").addEventListener("change", function() {
   if (this.value === "discount") {
+    // โหมดส่วนลด → ซ่อนช่องกรอกจำนวน, แสดงตารางส่วนลด
     document.getElementById("discountTable").style.display = "block";
     document.getElementById("generalInput").style.display = "none";
   } else {
+    // 3 โหมดอื่น → แสดงช่องกรอกจำนวน, ซ่อนตารางส่วนลด
     document.getElementById("discountTable").style.display = "none";
     document.getElementById("generalInput").style.display = "block";
   }
 });
 
+
 </script>
 
 </body>
 </html>
+
 
 
 
