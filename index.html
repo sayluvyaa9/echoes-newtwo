@@ -273,10 +273,21 @@ function calculateDiscount() {
 
   document.getElementById("result").innerHTML = html;
 }
+  document.getElementById("modeSelect").addEventListener("change", function() {
+  if (this.value === "discount") {
+    document.getElementById("discountTable").style.display = "block";
+    document.getElementById("generalInput").style.display = "none";
+  } else {
+    document.getElementById("discountTable").style.display = "none";
+    document.getElementById("generalInput").style.display = "block";
+  }
+});
+
 </script>
 
 </body>
 </html>
+
 
 
 
