@@ -160,6 +160,7 @@
   else if (mode === "budget") calculateBudget();
   else if (mode === "discount") calculateDiscount();
 }
+
 // ราคาพรีออเดอร์ (ใช้เฉพาะโหมดส่วนลด)
 const preorderDiscount = {
   66: { base: 30, "3%": 29, "10%": 27, topup: 60 },
@@ -272,12 +273,12 @@ function calculateDiscount() {
 
   document.getElementById("result").innerHTML = html;
 }
-
-  
 </script>
 
 </body>
 </html>
+
+
 
 
 
