@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เครื่องคำนวณ Echoes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <div class="card shadow">
+    <div class="card-body">
+      <h2 class="card-title text-center mb-4">เครื่องคำนวณแพ็กเกจ Echoes</h2>
+
+      <!-- ประเภทการเติม -->
+      <div class="mb-3">
+        <label for="priceType" class="form-label">ประเภทการเติม</label>
+        <select id="priceType" class="form-select">
+          <option value="topup">ราคาแบบพร้อมเติม</option>
+          <option value="preorder">ราคาแบบพรีออเดอร์</option>
+        </select>
+      </div>
+
+      <!-- โหมดการคำนวณ -->
+      <div class="mb-3">
+        <label for="modeSelect" class="form-label">เลือกโหมดคำนวณ</label>
+        <select id="modeSelect" class="form-select">
+          <option value="buttons">คำนวณจากจำนวนกระดุม</option>
+          <option value="topup">คำนวณจากยอดเติมเสียงสะท้อน</option>
+          <option value="budget">คำนวณจากงบประมาณ</option>
+          <option value="discount">คำนวณแบบใช้ส่วนลด</option>
+        </select>
+      </div>
+
+      <!-- ช่องกรอกจำนวน -->
+      <div class="mb-3" id="generalInput">
+        <label for="echoesInput" class="form-label">จำนวนที่ต้องการ (กระดุม / ยอดเติม / งบ)</label>
+        <input type="number" id="echoesInput" class="form-control" placeholder="เช่น 833 หรือ 1759 หรือ 1000">
+      </div>
+
+      <!-- ตารางเลือกแพ็กและส่วนลด -->
+      <div id="discountTable" class="mt-3" style="display:none;">
+        <h5>เลือกแพ็กและส่วนลด</h5>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>แพ็ก</th>
+              <th>ส่วนลด</th>
+            </tr>
+          </thead>
+          <tbody id="discountRows"></tbody>
+        </table>
+        <button class="btn btn-secondary" onclick="addDiscountRow()">เพิ่มแถว</button>
+      </div>
+
+      <button class="btn btn-primary w-100 mt-3" onclick="calculate()">คำนวณ</button>
+
+      <div class="mt-4">
+        <h5>ผลลัพธ์:</h5>
+        <div id="result" class="bg-white p-3 border rounded"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ราคาพร้อมเติม
+  const topupDiscount = {
+    66: { base: 35, "3%": 31, "10%": 29, topup: 60 },
+    203: { base: 105, "3%": 88, "10%": 82, topup: 185 },
+    335: { base: 150, "3%": 146, "10%": 140, topup: 305 },
+    759: { base: 340, "3%": 295, "10%": 275, topup: 660 },
+    2227: { base: null, "3%": 880, "10%": 800, topup: 2025 },
+    3663: { base: null, "3%": 1460, "10%": 1370, topup: 3330 },
+    7249: { base: null, "3%": 2920, "10%": 2740, topup: 6590 }
+  };
+
+  // ราคาพรีออเดอร์
+  const preorderDiscount = {
+    66: { base: 30, "3%": 29, "10%": 27, topup: 60 },
+    203: { base: 85, "3%": 82, "10%": 77, topup: 185 },
+    335: { base: 140, "3%": 135, "10%": 125, topup: 305 },
+    759: { base: 280, "3%": 272, "10%": 252, topup: 690 },
+    2227: { base: null, "3%": 820, "10%": 760, topup: 2025 },
+    3663: { base: null, "3%": 1360, "10%": 1260, topup: 3330 },
+    7249: { base: null, "3%": 2620, "10%": 2430, topup: 6590 }
+  };
+
+  const echoTopup = { 66: 60, 203: 185, 335: 305, 759: 690 };
+  const prices = { 66: 30, 203: 85, 335: 140, 759: 280 };
+
+  // สร้างตารางเลือกแพ็กและส่วนลด
+  const discountPacks = [66,203,335,759,2227,3663,7249];
+  const discountRates = ["ไม่ใช้ส่วนลด","3%","10%"];
+
+  function createRow() {
+    let row = document.createElement("tr");
+
+    let packCell = document.createElement("td");
+    let packSelect = document.createElement("select");
+    packSelect.className = "form-select";
+    discountPacks.forEach(p=>{
+      let opt = document.createElement("option");
+      opt.value = p;
+      opt.textContent = p;
+      packSelect.appendChild(opt);
+    });
+    packCell.appendChild(packSelect);
+
+    let rateCell = document.createElement("td");
+    let rateSelect = document.createElement("select");
+    rateSelect.className = "form-select";
+    discountRates.forEach(r=>{
+      let opt = document.createElement("option");
+      opt.value = r;
+      opt.textContent = r;
+      rateSelect.appendChild(opt);
+    });
+    rateCell.appendChild(rateSelect);
+
+    row.appendChild(packCell);
+    row.appendChild(rateCell);
+    return row;
+  }
+
+  function addDiscountRow() {
+    document.getElementById("discountRows").appendChild(createRow());
+  }
+
+  // สร้าง 5 แถวเริ่มต้น
+  for (let i=0;i<5;i++) addDiscountRow();
+
+  // แสดง/ซ่อนตารางส่วนลด
+  document.getElementById("modeSelect").addEventListener("change", function() {
+    if (this.value === "discount") {
+      document.getElementById("discountTable").style.display = "block";
+      document.getElementById("generalInput").style.display = "none";
+    } else {
+      document.getElementById("discountTable").style.display = "none";
+      document.getElementById("generalInput").style.display = "block";
+    }
+  });
+
+  // ฟังก์ชันคำนวณโหมดส่วนลด
+  function calculateDiscount() {
+    let priceType = document.getElementById("priceType").value;
+    let rows = document.querySelectorAll("#discountRows tr");
+    let results = [];
+
+    rows.forEach(r=>{
+      let pack = parseInt(r.children[0].querySelector("select").value);
+      let rate = r.children[1].querySelector("select").value;
+
+      let dataset = (priceType==="topup"?topupDiscount:preorderDiscount);
+      let data = dataset[pack];
+      if (!data) return;
+
+      let basePrice = data.base;
+      let discountPrice = basePrice;
+      if (rate==="3%") discountPrice = data["3%"];
+      if (rate==="10%") discountPrice = data["10%"];
+      if (rate==="ไม่ใช้ส่วนลด" && basePrice===null) return;
+
+      results.push({
+        pack,
+        base: basePrice,
+        discount: discountPrice,
+        topup: data.topup
+      });
+    });
+
+    let totalBase = results.reduce((sum,r)=>sum+(r.base||0),0);
+    let totalDiscount = results.reduce((sum,r)=>sum+(r.discount||0),0);
+    let totalEchoes = results.reduce((sum,r)=>sum+r.pack,0);
+    let totalTopup = results.reduce((sum,r)=>sum+r.topup,0);
+
+    let html = "<table class='table table-bordered'><thead><tr><th>แพ็ก</th><th>ราคาปกติ</th><th>ราคาหลังส่วนลด</th><th>ยอดเติม</th></
+    let html = "<table class='table table-bordered'><thead><tr><th>แพ็ก</th><th>ราคาปกติ</th><th>ราคาหลังส่วนลด</th><th>ยอดเติม</th></tr></thead><tbody>";
+    results.forEach(r=>{
+      html += `<tr><td>${r.pack}</td><td>${r.base!==null?r.base:"-"}</td><td>${r.discount}</td><td>${r.topup}</td></tr>`;
+    });
+    html += `<tr><td>รวม</td><td>${totalBase}</td><td>${totalDiscount}</td><td>${totalTopup}</td></tr>`;
+    html += "</tbody></table>";
+
+    html += `<p>สูตรการเติมที่ใช้: ${results.map(r=>r.pack+"x1").join(", ")}</p>`;
+    html += `<p>รวมทั้งหมด: ${totalEchoes} กระดุม</p>`;
+    html += `<p>ราคารวม: ${totalDiscount} บาท</p>`;
+    html += `<p>ยอดเติมเสียงสะท้อนรวม: ${totalTopup}</p>`;
+
+    document.getElementById("result").innerHTML = html;
+  }
+
+  // ฟังก์ชันคำนวณโหมดเดิม
+  function generateOptions(mode, target) {
+    let options = [];
+    let maxBig = 0;
+
+    if (mode === "budget") {
+      maxBig = Math.floor(target / prices[759]) + 5;
+    } else if (mode === "buttons") {
+      maxBig = Math.floor(target / 759) + 5;
+    } else if (mode === "topup") {
+      maxBig = Math.floor(target / echoTopup[759]) + 5;
+    }
+
+    for (let c66=0;c66<=2;c66++) {
+      for (let c203=0;c203<=1;c203++) {
+        for (let c335=0;c335<=1;c335++) {
+          for (let c759=0;c759<=maxBig;c759++) {
+            let echoes = c66*66 + c203*203 + c335*335 + c759*759;
+            let topup = c66*echoTopup[66] + c203*echoTopup[203] + c335*echoTopup[335] + c759*echoTopup[759];
+
+            let price759 = prices[759];
+            if (c759 >= 25) {
+              price759 = 275;
+            } else if (c759 >= 15) {
+              price759 = 278;
+            }
+
+            let price = c66*prices[66] + c203*prices[203] + c335*prices[335] + c759*price759;
+
+            let desc = `${c759>0?`759x${c759} `:""}${c335>0?`335x${c335} `:""}${c203>0?`203x${c203} `:""}${c66>0?`66x${c66}`:""}`.trim();
+            if (!desc) continue;
+
+            if (mode==="buttons" && echoes>=target) options.push({desc,echoes,topup,price});
+            if (mode==="topup" && topup>=target) options.push({desc,echoes,topup,price});
+            if (mode==="budget") options.push({desc,echoes,topup,price});
+          }
+        }
+      }
+    }
+    return options;
+  }
+
+  function calculateButtons() {
+    let needed = parseInt(document.getElementById("echoesInput").value);
+    if (isNaN(needed) || needed <= 0) {
+      document.getElementById("result").innerText = "กรุณากรอกจำนวนกระดุมที่ถูกต้อง";
+      return;
+    }
+    let options = generateOptions("buttons", needed).filter(o=>o.echoes>=needed);
+    options.sort((a,b)=>a.price-b.price);
+    let best = options[0];
+    document.getElementById("result").innerHTML = `
+      <p>สูตรที่เลือก: ${best.desc}</p>
+      <p>รวมทั้งหมด: ${best.echoes} กระดุม</p>
+      <p>ราคารวม: ${best.price} บาท</p>
+      <p>ยอดเติมเสียงสะท้อนรวม: ${best.topup}</p>`;
+  }
+
+  function calculateTopup() {
+    let neededTopup = parseInt(document.getElementById("echoesInput").value);
+    if (isNaN(neededTopup) || neededTopup <= 0) {
+      document.getElementById("result").innerText = "กรุณากรอกยอดเติมเสียงสะท้อนที่ถูกต้อง";
+      return;
+    }
+    let options = generateOptions("topup", neededTopup).filter(o=>o.topup>=neededTopup);
+    options.sort((a,b)=>a.price-b.price);
+    let best = options[0];
+    document.getElementById("result").innerHTML = `
+      <p>สูตรที่เลือก: ${best.desc}</p>
+      <p>รวมทั้งหมด: ${best.echoes} กระดุม</p>
+      <p>ราคารวม: ${best.price} บาท</p>
+      <p>ยอดเติมเสียงสะท้อนรวม: ${best.topup}</p>`;
+  }
+
+  function calculateBudget() {
+    let budget = parseInt(document.getElementById("echoesInput").value);
+    if (isNaN(budget) || budget <= 0) {
+      document.getElementById("result").innerText = "กรุณากรอกงบประมาณที่ถูกต้อง";
+      return;
+    }
+    let options = generateOptions("budget", budget);
+
+    let lower = options.filter(o=>o.price<budget).sort((a,b)=>(budget-a.price)-(budget-b.price))[0];
+    let equal = options.reduce((best,o)=>Math.abs(o.price-budget)<Math.abs((best?.price||0)-budget)?o:best,null);
+    let higher = options.filter(o=>o.price>budget).sort((a,b)=>(a.price-budget)-(b.price-budget))[0];
+
+    let html = "<table class='table table-bordered'><thead><tr><th>ตัวเลือก</th><th>สูตร</th><th>ราคา</th><th>กระดุมรวม</th><th>ยอดเติมเสียงสะท้อน</th></tr></thead><tbody>";
+    if (lower) html += `<tr><td>ต่ำกว่า</td><td>${lower.desc}</td><td>${lower.price} บาท</td><td>${lower.echoes}</td><td>${lower.topup}</td></tr>`;
+    if (equal) html += `<tr><td>ใกล้เคียง/เท่ากับ</td><td>${equal.desc}</td><td>${equal.price} บาท</td><td>${equal.echoes}</td><td>${equal.topup}</td></tr>`;
+    if (higher) html += `<tr><td>สูงกว่าเล็กน้อย</td><td>${higher.desc}</td><td>${higher.price} บาท</td><td>${higher.echoes}</td><td>${higher.topup}</td></tr>`;
+    html += "</tbody></table>";
+    document.getElementById("result").innerHTML = html;
+  }
+
+  // ฟังก์ชันหลัก
+  function calculate() {
+    let mode = document.getElementById("modeSelect").value;
+    if (mode === "buttons") calculateButtons();
+    else if (mode === "topup") calculateTopup();
+    else if (mode === "budget") calculateBudget();
+    else if (mode === "discount") calculateDiscount();
+  }
+</script>
+
+</body>
+</html>
