@@ -268,6 +268,31 @@ z-index:999;
 .dark-toggle:hover{
 transform:scale(1.1);
 }
+
+/* ตารางในโหมดกลางคืน */
+.dark-mode .table{
+  background:#4a3445;
+  color:#ffd9ec;
+}
+
+/* หัวตาราง */
+.dark-mode .table thead{
+  background:#ff9bd0;
+  color:#3a2b37;
+}
+
+/* ช่องตาราง */
+.dark-mode .table td,
+.dark-mode .table th{
+  background:#4a3445;
+  color:#ffd9ec;
+  border-color:#6b4a63;
+}
+
+/* ลบพื้นหลังขาว bootstrap */
+.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>*{
+  background:#4a3445;
+}
     
 </style>
   
@@ -667,6 +692,7 @@ window.onload = function(){
   
 </body>
 </html>
+
 
 
 
