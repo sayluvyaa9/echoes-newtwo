@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   
   <meta charset="UTF-8">
@@ -11,15 +11,9 @@
 
   <style>
 
-    @font-face {
-  font-family: "Lookpeach";
-  src: url("lookpeach.ttf") format("truetype");
-}
-
 body{
   background: linear-gradient(180deg,#ffe6f4,#fff7fb);
-  font-family:"Lookpeach","Kanit",sans-serif;
-  animation: fadeIn 1s ease;
+  font-family:"Sarabun",sans-serif;
 }
 
 @keyframes fadeIn{
@@ -163,9 +157,7 @@ hr{
 }
 
     #result p{
-  font-family:"Lookpeach","Kanit",sans-serif;
-  font-size:18px;
-  margin-bottom:6px;
+  font-family:"Sarabun",sans-serif;
 }
 
 @keyframes pop{
@@ -228,10 +220,12 @@ hr{
 }
 
 .dark-mode #result{
-  background:#4a3445;
+  background:linear-gradient(180deg,#3a2a35,#4a3445);
   border:1px solid #ff9bd0;
+  color:#ffe3f3;
+  box-shadow:0 6px 20px rgba(0,0,0,0.4);
 }
-
+    
 .dark-mode .table{
   background:#4a3445;
   color:#ffd9ec;
@@ -314,15 +308,17 @@ transform:scale(1.1);
       <!-- ===== โหมดกาชา ===== -->
 <div id="gachaInput" style="display:none;">
 
-  <div class="mb-3">
-    <label class="form-label">จำนวนแพ็กพิเศษ (576 Echoes ได้ 10 ลูก ใส่จำนวนแพ็ก เช่น 1) </label>
-    <input type="number" id="specialPack" class="form-control">
-  </div>
+ <div class="mb-3">
+  <label class="form-label">จำนวนแพ็กพิเศษ</label>
+  <input type="number" id="specialPack" class="form-control"
+  placeholder="576 Echoes ได้ 10 ลูก เช่น 1 แพ็ก">
+</div>
 
-  <div class="mb-3">
-    <label class="form-label">จำนวนลูกปกติที่ต้องการ (ลูกละ 96 Echoes ใส่จำนวน เช่น 10)</label>
-    <input type="number" id="normalBalls" class="form-control">
-  </div>
+<div class="mb-3">
+  <label class="form-label">จำนวนลูกปกติที่ต้องการ</label>
+  <input type="number" id="normalBalls" class="form-control"
+  placeholder="ลูกละ 96 Echoes เช่น 10 ลูก">
+</div>
 
 </div>
 
@@ -671,5 +667,6 @@ window.onload = function(){
   
 </body>
 </html>
+
 
 
