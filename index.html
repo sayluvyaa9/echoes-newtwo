@@ -376,6 +376,60 @@ transform:scale(1.1);
     </a>
   </div>
 
+  <div class="container mt-4">
+
+<h4 class="text-center">🛍 Skin Gallery</h4>
+<p class="text-center text-muted">เลือกสกินที่ต้องการ ระบบจะรวม Echoes ให้แล้วคำนวณสูตรเติมที่คุ้มที่สุด</p>
+
+<div class="row" id="skinGallery">
+
+<!-- ตัวอย่าง Skin -->
+<div class="col-md-4 col-6 mb-3">
+<div class="card">
+<img src="https://via.placeholder.com/300x200" class="card-img-top">
+<div class="card-body text-center">
+
+<h6>Skin S</h6>
+<p>2888 Echoes</p>
+
+<input type="checkbox"
+class="skin-check"
+data-echo="2888"
+data-label="Skin S">
+
+</div>
+</div>
+</div>
+
+<!-- ตัวอย่าง Skin ลดราคา -->
+<div class="col-md-4 col-6 mb-3">
+<div class="card">
+<img src="https://via.placeholder.com/300x200" class="card-img-top">
+<div class="card-body text-center">
+
+<h6>Skin S ลด40%</h6>
+<p>1888 Echoes</p>
+
+<input type="checkbox"
+class="skin-check"
+data-echo="1888"
+data-label="Skin S ลด40%">
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="text-center mt-3">
+<button class="btn btn-primary" onclick="calculateSkinWish()">
+✨ คำนวณ Skin Wish
+</button>
+</div>
+
+<div id="skinResult" class="mt-3"></div>
+
+</div>      
 </div>
     </div>
   </div>
@@ -687,11 +741,60 @@ window.onload = function(){
     document.querySelector(".dark-toggle").innerHTML="☀️";
   }
 };
+
+  function calculateSkinWish(){
+
+let checks = document.querySelectorAll(".skin-check:checked");
+
+if(checks.length===0){
+document.getElementById("skinResult").innerText="กรุณาเลือกสกิน";
+return;
+}
+
+let totalEchoes=0;
+let labels=[];
+
+checks.forEach(c=>{
+totalEchoes+=parseInt(c.dataset.echo);
+labels.push(c.dataset.label);
+});
+
+let options = generateOptions("buttons", totalEchoes)
+                .filter(o=>o.echoes>=totalEchoes);
+
+options.sort((a,b)=>a.price-b.price);
+
+let best = options[0];
+
+document.getElementById("skinResult").innerHTML=`
+
+<div style="background:#fff0f7;padding:15px;border-radius:15px">
+
+<p><strong>Skin ที่เลือก</strong></p>
+
+${labels.map(l=>`<span class="badge bg-danger">${l}</span>`).join(" ")}
+
+<hr>
+
+<p>Echoes รวม: ${totalEchoes.toLocaleString()}</p>
+
+<p>สูตรเติมคุ้มสุด: ${best.desc}</p>
+
+<p>ราคา: ${best.price.toLocaleString()} บาท</p>
+
+<p>ยอดเติมเสียงสะท้อน: ${best.topup.toLocaleString()}</p>
+
+</div>
+
+`;
+
+}
   
 </script>
   
 </body>
 </html>
+
 
 
 
