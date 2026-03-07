@@ -1,18 +1,300 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+
+  
   <meta charset="UTF-8">
   <title>เครื่องคำนวณ Echoes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+
+    @font-face {
+  font-family: "Lookpeach";
+  src: url("lookpeach.ttf") format("truetype");
+}
+
+body{
+  background: linear-gradient(180deg,#ffe6f4,#fff7fb);
+  font-family:"Lookpeach","Kanit",sans-serif;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+/* กล่องหลัก */
+.card{
+  border-radius:20px;
+  margin-top:10px;
+}
+
+/* หัวข้อ */
+.card-title{
+  color:#ff4fa3;
+  font-weight:600;
+}
+
+/* input */
+.form-control, .form-select{
+  border-radius:12px;
+  border:1px solid #ffc2dd;
+}
+
+/* focus */
+.form-control:focus, .form-select:focus{
+  border-color:#ff8fc7;
+  box-shadow:0 0 0 0.15rem rgba(255,140,200,.25);
+}
+
+/* ปุ่มหลัก */
+.btn-primary{
+  background:#ff7eb9;
+  border:none;
+  border-radius:14px;
+  font-weight:500;
+}
+
+.btn-primary:hover{
+  background:#ff5fa8;
+}
+
+/* ปุ่มเพิ่ม */
+.btn-secondary{
+  background:#ffd3e6;
+  border:none;
+  color:#a63c6c;
+  border-radius:12px;
+}
+
+.btn-secondary:hover{
+  background:#ffc2dd;
+}
+
+/* กล่องผลลัพธ์ */
+#result{
+  border-radius:14px;
+  background:#fff0f6;
+  border:1px solid #ffd1e8;
+}
+
+/* ตาราง */
+.table{
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.table thead{
+  background:#ffd6eb;
+}
+
+/* เส้น hr */
+hr{
+  border-top:1px dashed #ffb3da;
+}
+
+    .banner{
+  width:100%;
+  text-align:center;
+  margin-bottom:5px;
+}
+
+.banner img{
+  width:100%;
+  max-height:220px;
+  object-fit:cover;
+  border-radius:20px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+  100%{transform:translateY(0)}
+}
+
+     .card{
+  border-radius:24px;
+  border:none;
+  box-shadow:0 10px 30px rgba(255,120,180,0.25);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+}
+
+.card-title{
+  color:#ff4fa3;
+  font-size:28px;
+  text-align:center;
+}
+
+  .btn-primary{
+  background:linear-gradient(45deg,#ff7eb9,#ffb3da);
+  border:none;
+  border-radius:16px;
+  font-size:18px;
+  transition:0.2s;
+}
+
+.btn-primary:hover{
+  transform:scale(1.05);
+}
+
+.btn-secondary{
+  background:#ffd3e6;
+  border:none;
+  border-radius:14px;
+}
+
+  #result{
+  background:#fff0f7;
+  border:1px solid #ffd6eb;
+  border-radius:18px;
+  padding:15px;
+  animation: pop 0.4s ease;
+}
+
+    #result p{
+  font-family:"Lookpeach","Kanit",sans-serif;
+  font-size:18px;
+  margin-bottom:6px;
+}
+
+@keyframes pop{
+  0%{
+    transform:scale(0.9);
+    opacity:0;
+  }
+  100%{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+  .sparkle{
+  position:absolute;
+  font-size:20px;
+  animation:spark 2s infinite;
+}
+
+@keyframes spark{
+  0%{opacity:0;transform:translateY(0)}
+  50%{opacity:1}
+  100%{opacity:0;transform:translateY(-10px)}
+}
+
+    .contact-btn{
+  background:linear-gradient(45deg,#ff6fb5,#ff9bd0);
+  border:none;
+  border-radius:20px;
+  padding:10px 25px;
+  font-size:18px;
+  font-family:"Lookpeach";
+  transition:0.2s;
+}
+
+.contact-btn:hover{
+  transform:scale(1.08);
+  background:linear-gradient(45deg,#ff5fa8,#ff8fc7);
+}
+
+    .footer-credit{
+  text-align:center;
+  margin-top:20px;
+  padding:12px;
+  font-size:13px;
+  color:#a63c6c;
+  background:#ffeaf5;
+  border-top:1px solid #ffd1e8;
+}
+
+    /* ===== DARK MODE ===== */
+
+.dark-mode{
+  background:linear-gradient(180deg,#2a1f2a,#3b2838);
+}
+
+.dark-mode .card{
+  background:#3a2b37;
+  color:#ffd9ec;
+}
+
+.dark-mode #result{
+  background:#4a3445;
+  border:1px solid #ff9bd0;
+}
+
+.dark-mode .table{
+  background:#4a3445;
+  color:#ffd9ec;
+}
+
+.dark-mode .table thead{
+  background:#ff9bd0;
+  color:#3a2b37;
+}
+
+.dark-mode .footer-credit{
+  background:#3a2b37;
+  color:#ffb6d9;
+  border-top:1px solid #ff9bd0;
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select{
+  background:#4a3445;
+  color:#ffd9ec;
+  border:1px solid #ff9bd0;
+}
+
+    .dark-toggle{
+position:fixed;
+top:20px;
+right:20px;
+background:#ff9bd0;
+border:none;
+width:45px;
+height:45px;
+border-radius:50%;
+font-size:20px;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+cursor:pointer;
+transition:0.2s;
+z-index:999;
+}
+
+.dark-toggle:hover{
+transform:scale(1.1);
+}
+    
+</style>
+  
 </head>
 <body class="bg-light">
 
-<div class="container py-5">
+<button class="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+
+<div class="banner">
+  <img src="banner.png">
+</div>
+
+  
+<div class="container py-2">
   <div class="card shadow">
     <div class="card-body">
-      <h2 class="card-title text-center mb-4">เครื่องคำนวณแพ็กเกจ Echoes</h2>
-
+      <h2 class="card-title">
+🎀คำนวณ Echoes🎀  
+<br>
+💗by sayluvyaa💗
+</h2>
       <div class="mb-3">
         <label for="modeSelect" class="form-label">เลือกโหมดคำนวณ</label>
         <select id="modeSelect" class="form-select">
@@ -20,6 +302,7 @@
           <option value="topup">คำนวณจากยอดเติมเสียงสะท้อน</option>
           <option value="budget">คำนวณจากงบประมาณ</option>
           <option value="discount">คำนวณแบบใช้ส่วนลด</option>
+          <option value="gacha">คำนวณลูกกาชา</option>
 
         </select>
       </div>
@@ -27,6 +310,20 @@
       <div class="mb-3" id="generalInput">
   <label for="echoesInput" class="form-label">จำนวนที่ต้องการ (กระดุม / ยอดเติม / งบ)</label>
   <input type="number" id="echoesInput" class="form-control" placeholder="เช่น 833 หรือ 1759 หรือ 1000">
+</div>
+      <!-- ===== โหมดกาชา ===== -->
+<div id="gachaInput" style="display:none;">
+
+  <div class="mb-3">
+    <label class="form-label">จำนวนแพ็กพิเศษ (576 Echoes ได้ 10 ลูก ใส่จำนวนแพ็ก เช่น 1) </label>
+    <input type="number" id="specialPack" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">จำนวนลูกปกติที่ต้องการ (ลูกละ 96 Echoes ใส่จำนวน เช่น 10)</label>
+    <input type="number" id="normalBalls" class="form-control">
+  </div>
+
 </div>
 
 <!-- ตารางเลือกแพ็กและส่วนลด -->
@@ -41,19 +338,33 @@
     </thead>
     <tbody id="discountRows"></tbody>
   </table>
-  <button class="btn btn-secondary" onclick="addDiscountRow()">เพิ่มแถว</button>
+  <button class="btn btn-secondary mt-2" onclick="addDiscountRow()">➕ เพิ่มแถว</button>
 </div>
 
 <button class="btn btn-primary w-100" onclick="calculate()">คำนวณ</button>
 
 
       <div class="mt-4">
-        <h5>ผลลัพธ์:</h5>
-        <div id="result" class="bg-white p-3 border rounded"></div>
-      </div>
+  <h5>✨ ผลลัพธ์การคำนวณ</h5>
+
+  <div id="result" class="bg-white p-3 border rounded"></div>
+
+  <div class="text-center mt-3">
+    <a href="https://www.facebook.com/share/1CEyAyv53R/?mibextid=wwXIfr" target="_blank" class="btn btn-primary contact-btn">
+      💬 ติดต่อสั่งเติมกับร้าน
+    </a>
+  </div>
+
+</div>
     </div>
   </div>
 </div>
+
+  <footer class="footer-credit">
+  💗 Sayluvyaa Topup • เติมเกม Echoes ราคาถูก  
+  <br>
+  © 2026 All Rights Reserved
+</footer>
 
 <script>
   const echoTopup = { 66: 60, 203: 185, 335: 305, 759: 690 };
@@ -72,7 +383,7 @@
     }
 
     for (let c66=0;c66<=2;c66++) {
-      for (let c203=0;c203<=1;c203++) {
+      for (let c203=0;c203<=2;c203++) {
         for (let c335=0;c335<=1;c335++) {
           for (let c759=0;c759<=maxBig;c759++) {
             let echoes = c66*66 + c203*203 + c335*335 + c759*759;
@@ -111,10 +422,10 @@
     options.sort((a,b)=>a.price-b.price);
     let best = options[0];
     document.getElementById("result").innerHTML = `
-      <p>สูตรที่เลือก: ${best.desc}</p>
-      <p>รวมทั้งหมด: ${best.echoes} กระดุม</p>
-      <p>ราคารวม: ${best.price} บาท</p>
-      <p>ยอดเติมเสียงสะท้อนรวม: ${best.topup}</p>`;
+<p>💡 สูตรที่เลือก: ${best.desc}</p>
+<p>🧷 รวมทั้งหมด: ${best.echoes.toLocaleString()} กระดุม</p>
+<p>💸 ราคารวม: ${best.price.toLocaleString()} บาท</p>
+<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${best.topup.toLocaleString()}</p>`;
   }
 
   function calculateTopup() {
@@ -126,11 +437,11 @@
     let options = generateOptions("topup", neededTopup).filter(o=>o.topup>=neededTopup);
     options.sort((a,b)=>a.price-b.price);
     let best = options[0];
-    document.getElementById("result").innerHTML = `
-      <p>สูตรที่เลือก: ${best.desc}</p>
-      <p>รวมทั้งหมด: ${best.echoes} กระดุม</p>
-      <p>ราคารวม: ${best.price} บาท</p>
-      <p>ยอดเติมเสียงสะท้อนรวม: ${best.topup}</p>`;
+      document.getElementById("result").innerHTML = `
+<p>💡 สูตรที่เลือก: ${best.desc}</p>
+<p>🧷 รวมทั้งหมด: ${best.echoes.toLocaleString()} กระดุม</p>
+<p>💸 ราคารวม: ${best.price.toLocaleString()} บาท</p>
+<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${best.topup.toLocaleString()}</p>`;
   }
 
   function calculateBudget() {
@@ -153,12 +464,54 @@
     document.getElementById("result").innerHTML = html;
   }
 
+ function calculateGacha() {
+
+  let specialPack = parseInt(document.getElementById("specialPack").value) || 0;
+  let normalBalls = parseInt(document.getElementById("normalBalls").value) || 0;
+
+  // Echoes ที่ต้องใช้จริง
+  let echoesNeeded = (specialPack * 576) + (normalBalls * 96);
+
+  if (echoesNeeded <= 0) {
+    document.getElementById("result").innerText = "กรุณากรอกจำนวนที่ต้องการ";
+    return;
+  }
+
+  // ใช้ระบบเดียวกับโหมดกระดุม
+  let options = generateOptions("buttons", echoesNeeded)
+                  .filter(o => o.echoes >= echoesNeeded);
+
+  options.sort((a,b)=>a.price-b.price);
+  let best = options[0];
+
+  // จัดรูปแบบแพ็กให้อ่านง่าย (มีเว้นวรรค)
+  let formattedDesc = best.desc
+      .replace(/x/g," x ")
+      .replace(/\s+/g," ")
+      .trim();
+
+  let totalBalls = (specialPack * 10) + normalBalls;
+
+  document.getElementById("result").innerHTML = `
+    <p>💡 สูตรที่เลือก: ${formattedDesc}</p>
+<p>🧷 รวมทั้งหมด: ${best.echoes.toLocaleString()} กระดุม</p>
+<p>💸 ราคารวม: ${best.price.toLocaleString()} บาท</p>
+<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${best.topup.toLocaleString()}</p>
+
+    <hr>
+
+    <p>จำนวนลูกกาชารวม: <strong>${totalBalls}</strong> ลูก</p>
+  `;
+}
+  
   function calculate() {
   let mode = document.getElementById("modeSelect").value;
+
   if (mode === "buttons") calculateButtons();
   else if (mode === "topup") calculateTopup();
   else if (mode === "budget") calculateBudget();
   else if (mode === "discount") calculateDiscount();
+  else if (mode === "gacha") calculateGacha();
 }
 
 // ราคาพรีออเดอร์ (ใช้เฉพาะโหมดส่วนลด)
@@ -274,29 +627,48 @@ function calculateDiscount() {
   document.getElementById("result").innerHTML = html;
 }
   document.getElementById("modeSelect").addEventListener("change", function() {
-  console.log("modeSelect value:", this.value); // ตรวจสอบค่า
+
+  document.getElementById("discountTable").style.display = "none";
+  document.getElementById("generalInput").style.display = "none";
+  document.getElementById("gachaInput").style.display = "none";
+
   if (this.value === "discount") {
     document.getElementById("discountTable").style.display = "block";
-    document.getElementById("generalInput").style.display = "none";
-  } else {
-    document.getElementById("discountTable").style.display = "none";
+  } 
+  else if (this.value === "gacha") {
+    document.getElementById("gachaInput").style.display = "block";
+  } 
+  else {
     document.getElementById("generalInput").style.display = "block";
   }
 });
 
+function toggleDarkMode(){
+  document.body.classList.toggle("dark-mode");
 
+  let btn = document.querySelector(".dark-toggle");
 
+  if(document.body.classList.contains("dark-mode")){
+    btn.innerHTML = "☀️";
+    localStorage.setItem("theme","dark");
+  }else{
+    btn.innerHTML = "🌙";
+    localStorage.setItem("theme","light");
+  }
+}
+
+// โหลดโหมดที่เคยใช้
+window.onload = function(){
+  let theme = localStorage.getItem("theme");
+
+  if(theme === "dark"){
+    document.body.classList.add("dark-mode");
+    document.querySelector(".dark-toggle").innerHTML="☀️";
+  }
+};
+  
 </script>
-
+  
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
