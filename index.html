@@ -354,6 +354,38 @@ object-fit:contain;
   color:#ff9bd0;
 }
     
+  .floating-contact{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#ff6fb5;
+color:white;
+padding:14px 24px;
+border-radius:40px;
+font-size:16px;
+text-decoration:none;
+box-shadow:0 6px 15px rgba(0,0,0,0.25);
+z-index:999;
+animation:floatBtn 2.5s ease-in-out infinite;
+}
+    
+.floating-contact:hover{
+background:#218838;
+color:white;
+}
+    
+    @keyframes floatBtn{
+0%{transform:translateY(0)}
+50%{transform:translateY(-6px)}
+100%{transform:translateY(0)}
+}
+
+  .floating-contact:hover{
+transform:scale(1.08);
+background:#ff5fa8;
+color:white;
+}
+    
 </style>
   
 </head>
@@ -428,12 +460,6 @@ object-fit:contain;
   <h5>✨ ผลลัพธ์การคำนวณ</h5>
 
   <div id="result" class="bg-white p-3 border rounded"></div>
-
-  <div class="text-center mt-3">
-    <a href="https://www.facebook.com/share/1CEyAyv53R/?mibextid=wwXIfr" target="_blank" class="btn btn-primary contact-btn">
-      💬 ติดต่อสั่งเติมกับร้าน
-    </a>
-  </div>
 
   <div class="container mt-4">
 
@@ -912,9 +938,16 @@ loadSkins();
 
 };
 </script>
+
+  <a href="https://www.facebook.com/share/1CEyAyv53R/?mibextid=wwXIfr"
+   target="_blank"
+   class="floating-contact">
+   💬 ติดต่อสั่งเติมกับร้าน
+</a>
   
 </body>
 </html>
+
 
 
 
