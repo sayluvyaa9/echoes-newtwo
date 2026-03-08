@@ -391,6 +391,10 @@ object-fit:cover;
 
 <button class="btn btn-primary w-100" onclick="calculate()">คำนวณ</button>
 
+      <button class="btn btn-secondary mt-2" onclick="resetSkin()">
+ล้างรายการ
+</button>
+
 
       <div class="mt-4">
   <h5>✨ ผลลัพธ์การคำนวณ</h5>
@@ -439,7 +443,7 @@ data-label="Skin S"></div>
 <img src="images/BlankSTierAccessoryCard.png" class="card-img-top">
 <div class="card-body text-center">
 
-<h6>Skin S ลด40%</h6>
+<h6>Skin S ลด 40%</h6>
 <p>1888 Echoes</p>
 
   <div class="skin-qty">
@@ -450,7 +454,7 @@ data-label="Skin S"></div>
 
   <div class="skin-data"
 data-echo="1888"
-data-label="Skin S ลด40%">
+data-label="Skin S ลด 40%">
 
 </div>
 </div>
@@ -856,11 +860,22 @@ if(qty<0) qty=0;
 qtyEl.innerText=qty;
 
 }
+
+  function resetSkin(){
+
+document.querySelectorAll(".qty").forEach(q=>{
+q.innerText = 0;
+});
+
+document.getElementById("skinResult").innerHTML="";
+
+}
   
 </script>
   
 </body>
 </html>
+
 
 
 
