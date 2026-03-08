@@ -345,6 +345,14 @@ object-fit:contain;
   border:1px solid #ff9bd0;
   color:#ffe3f3;
 }
+
+.skin-desc{
+  color:#ff7eb9;
+  font-weight:500;
+}
+    .dark-mode .skin-desc{
+  color:#ff9bd0;
+}
     
 </style>
   
@@ -430,7 +438,7 @@ object-fit:contain;
   <div class="container mt-4">
 
 <h4 class="text-center">🛍 Skin Gallery</h4>
-<p class="text-center text-muted">เลือกสกินที่ต้องการ ระบบจะรวม Echoes ให้แล้วคำนวณสูตรเติมที่คุ้มที่สุด</p>
+<p class="text-center skin-desc">เลือกสกินที่ต้องการ ระบบจะรวม Echoes ให้แล้วคำนวณสูตรเติมที่คุ้มที่สุด</p>
 
 <div class="row" id="skinGallery"></div>
 
@@ -793,7 +801,7 @@ let best = options[0];
 
 document.getElementById("skinResult").innerHTML=`
 
-<div style="background:#fff0f7;padding:15px;border-radius:15px">
+<div>
 
 <p><strong>Skin ที่เลือก</strong></p>
 
@@ -907,5 +915,6 @@ loadSkins();
   
 </body>
 </html>
+
 
 
