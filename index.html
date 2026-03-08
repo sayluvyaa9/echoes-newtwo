@@ -329,6 +329,22 @@ max-width:100%;
 max-height:100%;
 object-fit:contain;
 }
+
+/* กล่องผลลัพธ์ Skin Wish */
+#skinResult{
+  background:#fff0f7;
+  border:1px solid #ffd6eb;
+  border-radius:18px;
+  padding:15px;
+  margin-top:10px;
+}
+
+/* Dark Mode */
+.dark-mode #skinResult{
+  background:#3a2a35;
+  border:1px solid #ff9bd0;
+  color:#ffe3f3;
+}
     
 </style>
   
@@ -416,66 +432,15 @@ object-fit:contain;
 <h4 class="text-center">🛍 Skin Gallery</h4>
 <p class="text-center text-muted">เลือกสกินที่ต้องการ ระบบจะรวม Echoes ให้แล้วคำนวณสูตรเติมที่คุ้มที่สุด</p>
 
-<div class="row" id="skinGallery">
-
-<!-- ตัวอย่าง Skin -->
-<div class="col-md-4 col-6 mb-3">
-<div class="card">
-<div class="card-img-box">
-<img src="BlankSTierAccessoryCard.png">
-  </div>
-<div class="card-body text-center">
-
-<h6>Skin S</h6>
-<p>2888 Echoes</p>
-
-<div class="skin-qty">
-<button onclick="changeQty(this,-1)">−</button>
-<span class="qty">0</span>
-<button onclick="changeQty(this,1)">+</button>
-</div>
-
-<div class="skin-data"
-data-echo="2888"
-data-label="Skin S"></div>
-
-</div>
-</div>
-</div>
-
-<!-- ตัวอย่าง Skin ลดราคา -->
-<div class="col-md-4 col-6 mb-3">
-<div class="card">
-<div class="card-img-box">
-<img src="BlankSTierAccessoryCard.png">
-  </div>
-<div class="card-body text-center">
-
-<h6>Skin S ลด 40%</h6>
-<p>1888 Echoes</p>
-
-  <div class="skin-qty">
-<button onclick="changeQty(this,-1)">−</button>
-<span class="qty">0</span>
-<button onclick="changeQty(this,1)">+</button>
-</div>
-
-  <div class="skin-data"
-data-echo="1888"
-data-label="Skin S ลด 40%"></div>
-
-</div>
-</div>
-</div>
-
-</div>
+<div class="row" id="skinGallery"></div>
 
 <div class="text-center mt-3">
 <button class="btn btn-primary" onclick="calculateSkinWish()">
 ✨ คำนวณ Skin Wish
 </button>
 </div>
-    <div class="text-center mt-2">
+
+<div class="text-center mt-2">
 <button class="btn btn-secondary" onclick="resetSkin()">
 ล้าง Skin
 </button>
@@ -787,14 +752,6 @@ function toggleDarkMode(){
 }
 
 // โหลดโหมดที่เคยใช้
-window.onload = function(){
-  let theme = localStorage.getItem("theme");
-
-  if(theme === "dark"){
-    document.body.classList.add("dark-mode");
-    document.querySelector(".dark-toggle").innerHTML="☀️";
-  }
-};
 
  function calculateSkinWish(){
 
@@ -883,9 +840,72 @@ q.innerText = 0;
 document.getElementById("skinResult").innerHTML="";
 
 }
-  
+
+  function loadSkins(){
+
+let gallery = document.getElementById("skinGallery");
+
+skins.forEach(skin=>{
+
+gallery.innerHTML += `
+
+<div class="col-md-4 col-6 mb-3">
+<div class="card">
+
+<div class="card-img-box">
+<img src="${skin.img}">
+</div>
+
+<div class="card-body text-center">
+
+<h6>${skin.name}</h6>
+<p>${skin.echo} Echoes</p>
+
+<div class="skin-qty">
+<button onclick="changeQty(this,-1)">−</button>
+<span class="qty">0</span>
+<button onclick="changeQty(this,1)">+</button>
+</div>
+
+<div class="skin-data"
+data-echo="${skin.echo}"
+data-label="${skin.name}">
+</div>
+
+</div>
+</div>
+</div>
+
+`;
+
+});
+
+}
+
+  const skins = [
+
+{name:"Skin S", echo:2888, img:"BlankSTierCard.png"},
+{name:"Skin S ลด 40%", echo:1733, img:"BlankSTierCard.png"},
+{name:"Skin A", echo:1388, img:"BlankATierCard.png"},
+{name:"Skin A ลด 40%", echo:833, img:"BlankATierCard.png"}
+
+];
+
+  window.onload = function(){
+
+let theme = localStorage.getItem("theme");
+
+if(theme === "dark"){
+document.body.classList.add("dark-mode");
+document.querySelector(".dark-toggle").innerHTML="☀️";
+}
+
+loadSkins();
+
+};
 </script>
   
 </body>
 </html>
+
 
