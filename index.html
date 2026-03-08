@@ -316,9 +316,18 @@ min-width:20px;
 text-align:center;
 }
 
-.card-img-top{
-height:200px;
-object-fit:cover;
+.card-img-box{
+height:220px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:10px;
+}
+
+.card-img-box img{
+max-width:100%;
+max-height:100%;
+object-fit:contain;
 }
     
 </style>
@@ -391,11 +400,6 @@ object-fit:cover;
 
 <button class="btn btn-primary w-100" onclick="calculate()">คำนวณ</button>
 
-      <button class="btn btn-secondary mt-2" onclick="resetSkin()">
-ล้างรายการ
-</button>
-
-
       <div class="mt-4">
   <h5>✨ ผลลัพธ์การคำนวณ</h5>
 
@@ -417,7 +421,9 @@ object-fit:cover;
 <!-- ตัวอย่าง Skin -->
 <div class="col-md-4 col-6 mb-3">
 <div class="card">
-<img src="BlankSTierAccessoryCard.png" class="card-img-top">
+<div class="card-img-box">
+<img src="BlankSTierAccessoryCard.png">
+  </div>
 <div class="card-body text-center">
 
 <h6>Skin S</h6>
@@ -440,7 +446,9 @@ data-label="Skin S"></div>
 <!-- ตัวอย่าง Skin ลดราคา -->
 <div class="col-md-4 col-6 mb-3">
 <div class="card">
-<img src="BlankSTierAccessoryCard.png" class="card-img-top">
+<div class="card-img-box">
+<img src="BlankSTierAccessoryCard.png">
+  </div>
 <div class="card-body text-center">
 
 <h6>Skin S ลด 40%</h6>
@@ -454,7 +462,7 @@ data-label="Skin S"></div>
 
   <div class="skin-data"
 data-echo="1888"
-data-label="Skin S ลด 40%">
+data-label="Skin S ลด 40%"></div>
 
 </div>
 </div>
@@ -465,6 +473,11 @@ data-label="Skin S ลด 40%">
 <div class="text-center mt-3">
 <button class="btn btn-primary" onclick="calculateSkinWish()">
 ✨ คำนวณ Skin Wish
+</button>
+</div>
+    <div class="text-center mt-2">
+<button class="btn btn-secondary" onclick="resetSkin()">
+ล้าง Skin
 </button>
 </div>
 
@@ -875,15 +888,4 @@ document.getElementById("skinResult").innerHTML="";
   
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
 
