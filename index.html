@@ -676,7 +676,7 @@ onkeyup="searchSkin()">
 }
   
   const echoTopup = { 66: 60, 203: 185, 335: 305, 759: 690 };
-  const prices = { 66: 30, 203: 90, 335: 145, 759: 285 };
+  const prices = { 66: 30, 203: 85, 335: 140, 759: 280 };
 
   function generateOptions(mode, target) {
     let options = [];
@@ -699,10 +699,10 @@ onkeyup="searchSkin()">
 
             // ส่วนลดราคาพิเศษสำหรับแพ็กใหญ่
             let price759 = prices[759];
-            if (c759 >= 30) {
-              price759 = 280;
-            } else if (c759 >= 20) {
-              price759 = 283;
+            if (c759 >= 25) {
+              price759 = 275;
+            } else if (c759 >= 15) {
+              price759 = 278;
             }
 
             let price = c66*prices[66] + c203*prices[203] + c335*prices[335] + c759*price759;
@@ -720,107 +720,38 @@ onkeyup="searchSkin()">
     return options;
   }
 
-  function findBetterOption(options, best, maxExtra = 10){
-
-  let candidates = options.filter(o =>
-    o.price > best.price &&
-    o.price <= best.price + maxExtra &&
-    o.echoes > best.echoes
-  );
-
-  if(candidates.length === 0) return null;
-
-  // เลือกตัวที่คุ้มสุด (echoes ต่อบาท)
-  candidates.sort((a,b)=>
-    (b.echoes/b.price) - (a.echoes/a.price)
-  );
-
-  return candidates[0];
-}
-
-function calculateButtons() {
-  let needed = parseInt(document.getElementById("echoesInput").value);
-
-  if (isNaN(needed) || needed <= 0) {
-    document.getElementById("result").innerText = "กรุณากรอกจำนวนกระดุมที่ถูกต้อง";
-    return;
+  function calculateButtons() {
+    let needed = parseInt(document.getElementById("echoesInput").value);
+    if (isNaN(needed) || needed <= 0) {
+      document.getElementById("result").innerText = "กรุณากรอกจำนวนกระดุมที่ถูกต้อง";
+      return;
+    }
+    let options = generateOptions("buttons", needed).filter(o=>o.echoes>=needed);
+    options.sort((a,b)=>a.price-b.price);
+    let best = options[0];
+    document.getElementById("result").innerHTML = `
+<p>💡 สูตรที่เลือก: ${best.desc}</p>
+<p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>`;
   }
 
-  let options = generateOptions("buttons", needed).filter(o=>o.echoes>=needed);
-  options.sort((a,b)=>a.price-b.price);
-
-  let best = options[0];
-  let better = findBetterOption(options, best, 10);
-
-  let html = `
-  <p>💡 สูตรที่เลือก: ${best.desc}</p>
-  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
-  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
-  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
-  `;
-
-  if(better){
-    html += `
-    <hr>
-    <p style="color:#ff4fa3;font-weight:600;">
-    🔥 เพิ่มเงินอีก ${better.price - best.price} บาท  
-    เพื่อได้ +${better.echoes - best.echoes} echoes
-    </p>
-
-    <p>✨ สูตรแนะนำ: ${better.desc}</p>
-    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
-    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
-    <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(better.topup)}</p>
-    `;
+  function calculateTopup() {
+    let neededTopup = parseInt(document.getElementById("echoesInput").value);
+    if (isNaN(neededTopup) || neededTopup <= 0) {
+      document.getElementById("result").innerText = "กรุณากรอกยอดเติมเสียงสะท้อนที่ถูกต้อง";
+      return;
+    }
+    let options = generateOptions("topup", neededTopup).filter(o=>o.topup>=neededTopup);
+    options.sort((a,b)=>a.price-b.price);
+    let best = options[0];
+      document.getElementById("result").innerHTML = `
+<p>💡 สูตรที่เลือก: ${best.desc}</p>
+<p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>`;
   }
 
-  document.getElementById("result").innerHTML = html;
-}
-
-function calculateTopup() {
-  let neededTopup = parseInt(document.getElementById("echoesInput").value);
-  if (isNaN(neededTopup) || neededTopup <= 0) {
-    document.getElementById("result").innerText = "กรุณากรอกยอดเติมเสียงสะท้อนที่ถูกต้อง";
-    return;
-  }
-
-  let options = generateOptions("topup", neededTopup)
-                  .filter(o=>o.topup>=neededTopup);
-
-  options.sort((a,b)=>a.price-b.price);
-
-  let best = options[0];
-
-  // 🔥 เพิ่มตรงนี้
-  let better = findBetterOption(options, best, 10);
-
-  let html = `
-  <p>💡 สูตรที่เลือก: ${best.desc}</p>
-  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
-  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
-  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
-  `;
-
-  if(better){
-    let diffPrice = better.price - best.price;
-    let diffEcho = better.echoes - best.echoes;
-
-    html += `
-    <hr>
-    <p style="color:#ff4fa3;font-weight:600;">
-    🔥 เพิ่มเงินอีก ${diffPrice} บาท  
-    เพื่อได้ +${diffEcho} echoes
-    </p>
-
-    <p>✨ สูตรแนะนำ: ${better.desc}</p>
-    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
-    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
-    <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(better.topup)}</p>
-    `;
-  }
-
-  document.getElementById("result").innerHTML = html;
-}
   function calculateBudget() {
     let budget = parseInt(document.getElementById("echoesInput").value);
     if (isNaN(budget) || budget <= 0) {
@@ -853,7 +784,7 @@ function calculateTopup() {
     document.getElementById("result").innerHTML = html;
   }
 
-function calculateGacha() {
+ function calculateGacha() {
 
   let specialPack = parseInt(document.getElementById("specialPack").value) || 0;
   let normalBalls = parseInt(document.getElementById("normalBalls").value) || 0;
@@ -871,54 +802,23 @@ function calculateGacha() {
                   .filter(o => o.echoes >= echoesNeeded);
 
   options.sort((a,b)=>a.price-b.price);
-
   let best = options[0];
 
-  // 🔥 ตัวเลือกเพิ่มเงิน
-  let better = findBetterOption(options, best, 10);
+  // จัดรูปแบบแพ็กให้อ่านง่าย (มีเว้นวรรค)
+  let formattedDesc = best.desc;
 
   let totalBalls = (specialPack * 10) + normalBalls;
 
-  let html = `
-  <p>💡 สูตรที่เลือก: ${best.desc}</p>
-  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
-  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
-  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+  document.getElementById("result").innerHTML = `
+<p>💡 สูตรที่เลือก: ${formattedDesc}</p>
+<p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
 
-  <hr>
-
-  <p>จำนวนลูกกาชารวม: <strong>${totalBalls}</strong> ลูก</p>
-  `;
-
-  // 🔥 เพิ่ม option คุ้มกว่า
-  if(better){
-
-    let diffPrice = better.price - best.price;
-    let diffEcho = better.echoes - best.echoes;
-
-    // 🎯 คิดจำนวนลูกกาชาที่เพิ่ม
-    let extraBalls = Math.floor(diffEcho / 96);
-
-    html += `
     <hr>
 
-    <p style="color:#ff4fa3;font-weight:600;">
-    🔥 เพิ่มเงินอีก ${diffPrice} บาท  
-    เพื่อได้ +${diffEcho} echoes
-    </p>
-
-    <p style="font-weight:600;">
-    🎯 ได้เพิ่ม +${extraBalls} ลูกกาชา
-    </p>
-
-    <p>✨ สูตรแนะนำ: ${better.desc}</p>
-    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
-    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
-    <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(better.topup)}</p>
-    `;
-  }
-
-  document.getElementById("result").innerHTML = html;
+    <p>จำนวนลูกกาชารวม: <strong>${totalBalls}</strong> ลูก</p>
+  `;
 }
   
 function calculate() {
@@ -1117,7 +1017,6 @@ let options = generateOptions("buttons", totalEchoes)
 options.sort((a,b)=>a.price-b.price);
 
 let best = options[0];
-let better = findBetterOption(options, best, 10);
 
 document.getElementById("skinResult").innerHTML=`
 
@@ -1142,68 +1041,55 @@ ${labels.map(l=>`<span class="badge bg-danger">${l}</span>`).join(" ")}
 `;
 }
 
-function recalculateSkin(){
+  function recalculateSkin(){
 
-  let remain = parseInt(document.getElementById("remainEcho").value) || 0;
+let remain = parseInt(document.getElementById("remainEcho").value) || 0;
 
-  let skins = document.querySelectorAll(".skin-data");
+let skins = document.querySelectorAll(".skin-data");
 
-  let totalEchoes = 0;
-  let labels = [];
+let totalEchoes=0;
 
-  skins.forEach(s=>{
-    let qty = parseInt(
-      s.previousElementSibling.querySelector(".qty").innerText
-    );
+skins.forEach(s=>{
 
-    if(qty>0){
-      let echo = parseInt(s.dataset.echo);
-      let label = s.dataset.label;
+let qty = parseInt(
+s.previousElementSibling.querySelector(".qty").innerText
+);
 
-      totalEchoes += echo * qty;
-      labels.push(`${label} x${qty}`);
-    }
-  });
+if(qty>0){
+let echo = parseInt(s.dataset.echo);
+totalEchoes += echo*qty;
+}
 
-  let needEchoes = totalEchoes - remain;
-  if(needEchoes < 0) needEchoes = 0;
+});
 
-  let options = generateOptions("buttons", needEchoes)
-    .filter(o=>o.echoes>=needEchoes);
+let needEchoes = totalEchoes - remain;
 
-  options.sort((a,b)=>a.price-b.price);
+if(needEchoes < 0) needEchoes = 0;
 
-  let best = options[0];
+let options = generateOptions("buttons", needEchoes)
+.filter(o=>o.echoes>=needEchoes);
 
-  if(!best){
-    document.getElementById("skinResult").innerText = "ไม่ต้องเติมเพิ่ม";
-    return;
-  }
+options.sort((a,b)=>a.price-b.price);
 
-  let better = findBetterOption(options, best, 10);
+let best = options[0];
 
-  let html = `
-  <div>
-  <p><strong>Skin ที่เลือก</strong></p>
-  ${labels.map(l=>`<span class="badge bg-danger">${l}</span>`).join(" ")}
+document.getElementById("skinResult").innerHTML=`
 
-  <hr>
+<p>กระดุมที่ต้องใช้รวม: ${formatNum(totalEchoes)}</p>
 
-  <p>กระดุมที่ต้องใช้: ${formatNum(needEchoes)}</p>
-  <p>💡 สูตร: ${best.desc}</p>
-  <p>💸 ราคา: ${formatNum(best.price)} บาท</p>
-  `;
+<p>กระดุมติดที่มีในไอดี: ${formatNum(remain)}</p>
 
-  if(better){
-    html += `
-    <hr>
-    🔥 เพิ่ม ${better.price - best.price} บาท → ได้เพิ่ม ${better.echoes - best.echoes}
-    `;
-  }
+<p><strong>ต้องเติมเพิ่ม: ${formatNum(needEchoes)}</strong></p>
 
-  html += `</div>`;
+<hr>
 
-  document.getElementById("skinResult").innerHTML = html;
+<p>สูตรเติมคุ้มสุด: ${best.desc}</p>
+<p>รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+
+`;
+
 }
 
 function changeQty(btn,delta){
@@ -1230,7 +1116,42 @@ document.getElementById("skinResult").innerHTML="";
 
 }
 
-    const skins = [
+  function loadSkins(){
+
+let gallery = document.getElementById("skinGallery");
+
+skins.forEach(skin=>{
+
+gallery.innerHTML += `
+
+<div class="skin-card">
+
+<img src="${skin.img}">
+
+<div class="skin-info">
+<div class="skin-name">${skin.name}</div>
+<div class="skin-price">${skin.echo} Echoes</div>
+</div>
+
+<div class="skin-qty">
+<button onclick="changeQty(this,-1)">−</button>
+<span class="qty">0</span>
+<button onclick="changeQty(this,1)">+</button>
+</div>
+
+<div class="skin-data"
+data-echo="${skin.echo}"
+data-label="${skin.name}">
+</div>
+
+</div>
+
+`;
+});
+
+}
+
+  const skins = [
 
 {name:"Skin S", echo:2888, img:"skins.png"},
 {name:"Skin S ลด 40%", echo:1733, img:"skins.png"},
@@ -1286,61 +1207,33 @@ document.getElementById("skinResult").innerHTML="";
 {name:"Room A", echo:3288, img:"rooma.png"},
 {name:"Room B", echo:968, img:"roomb.png"},
 ];
-  
-function loadSkins(){
-  let gallery = document.getElementById("skinGallery");
-  gallery.innerHTML = ""; // ✅ เคลียร์ก่อน
 
-  skins.forEach(skin=>{
-
-gallery.innerHTML += `
-
-<div class="skin-card" data-match="true">
-
-<img src="${skin.img}">
-
-<div class="skin-info">
-<div class="skin-name">${skin.name}</div>
-<div class="skin-price">${skin.echo} Echoes</div>
-</div>
-
-<div class="skin-qty">
-<button onclick="changeQty(this,-1)">−</button>
-<span class="qty">0</span>
-<button onclick="changeQty(this,1)">+</button>
-</div>
-
-<div class="skin-data"
-data-echo="${skin.echo}"
-data-label="${skin.name}">
-</div>
-
-</div>
-
-`;
-});
-
-}
-
-window.onload = function(){
+  window.onload = function(){
 
 let theme = localStorage.getItem("theme");
-let btn = document.querySelector(".dark-toggle");
 
 if(theme === "dark"){
-  document.body.classList.add("dark-mode");
-  if(btn) btn.innerHTML="☀️";
+document.body.classList.add("dark-mode");
+document.querySelector(".dark-toggle").innerHTML="☀️";
 }
 
 loadSkins();
-showPage(1);
+
+showPage(1); // 👈 เพิ่มบรรทัดนี้
+
 };
   
- function scrollToSkinResult(){
-  setTimeout(()=>{
-    document.getElementById("skinResult")
-    .scrollIntoView({behavior:"smooth"});
-  },300); // เพิ่ม delay นิด
+  function scrollToSkinResult(){
+
+setTimeout(function(){
+
+document.getElementById("skinResult")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+},200);
+
 }
   
  function searchSkin(){
@@ -1441,7 +1334,6 @@ container.appendChild(btn);
 function changePage(step){
 showPage(currentPage + step);
 }
-
   
 </script>
 
@@ -1464,4 +1356,3 @@ target="_blank">
   
 </body>
 </html>
-
