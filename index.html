@@ -250,6 +250,7 @@ hr{
 position:fixed;
 top:20px;
 right:20px;
+      
 background:#ff9bd0;
 border:none;
 width:45px;
@@ -354,23 +355,75 @@ object-fit:contain;
   color:#ff9bd0;
 }
     
-  .floating-contact{
+    .floating-menu{
 position:fixed;
-bottom:20px;
 right:20px;
-background:#ff6fb5;
+bottom:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+z-index:999;
+}
+
+ /* ปุ่มกลับขึ้นด้านบน */
+.top-btn{
+position:fixed;
+right:20px;
+bottom:120px;
+
+width:45px;
+height:45px;
+
+border:none;
+border-radius:50%;
+
+font-size:20px;
 color:white;
-padding:14px 24px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:linear-gradient(45deg,#ff6fb5,#ff9bd0);
+
+box-shadow:0 6px 15px rgba(0,0,0,0.25);
+
+opacity:0;
+pointer-events:none;
+transition:0.3s;
+
+z-index:1000;
+}
+
+/* ตอน hover */
+.top-btn:hover{
+transform:scale(1.1);
+background:#ff5fa8;
+}
+
+.top-btn.show{
+opacity:1;
+pointer-events:auto;
+}
+
+.floating-menu a,
+.floating-menu button{
+background:linear-gradient(45deg,#ff6fb5,#ff9bd0);
+color:white;
+border:none;
 border-radius:40px;
-font-size:16px;
+padding:10px 16px;
+font-size:14px;
 text-decoration:none;
 box-shadow:0 6px 15px rgba(0,0,0,0.25);
-z-index:999;
-animation:floatBtn 2.5s ease-in-out infinite;
+cursor:pointer;
+transition:0.2s;
 }
-    
-.floating-contact:hover{
-background:#218838;
+
+.floating-menu a:hover,
+.floating-menu button:hover{
+transform:scale(1.08);
+background:#ff5fa8;
 color:white;
 }
     
@@ -385,13 +438,110 @@ transform:scale(1.08);
 background:#ff5fa8;
 color:white;
 }
+   .price-note{
+font-size:12px;
+color:#a63c6c;
+margin-top:8px;
+text-align:center;
+}
+
+.dark-mode .price-note{
+color:#ffb6d9;
+}
+
+    .skin-card{
+display:flex;
+align-items:center;
+gap:12px;
+background:white;
+padding:12px;
+border-radius:14px;
+box-shadow:0 4px 10px rgba(0,0,0,0.08);
+margin-bottom:10px;
+}
+
+.skin-card img{
+width:70px;
+height:90px;
+object-fit:cover;
+border-radius:8px;
+}
+
+.skin-info{
+flex:1;
+}
+
+.skin-name{
+font-weight:600;
+font-size:15px;
+}
+
+.skin-price{
+color:#777;
+font-size:14px;
+}
+
+#skinSearch{
+border-radius:20px;
+padding:10px 15px;
+border:1px solid #ffc2dd;
+}
+  
+#resultBox{
+max-height:0;
+overflow:hidden;
+opacity:0;
+transform:translateY(-20px);
+transition:all 0.5s ease;
+}
+
+#resultBox.show{
+max-height:500px;
+opacity:1;
+transform:translateY(0);
+}
+
+.dark-mode .skin-name{
+color:#ff7eb9;
+font-weight:600;
+}
+    
+.dark-mode .skin-card{
+background:#3a2b37;
+box-shadow:0 4px 12px rgba(0,0,0,0.4);
+border:1px solid #ff9bd0;
+}
+
+.dark-mode .skin-price{
+color:#ffb6d9;
+}
+
+    .pagination{
+display:flex;
+justify-content:center;
+gap:8px;
+margin-top:20px;
+flex-wrap:wrap;
+}
+
+.pagination button{
+padding:8px 14px;
+border-radius:10px;
+border:1px solid #d8b5c9;
+background:white;
+cursor:pointer;
+}
+
+.pagination button.active{
+background:#5f6f7d;
+color:white;
+}
     
 </style>
   
 </head>
 <body class="bg-light">
 
-<button class="dark-toggle" onclick="toggleDarkMode()">🌙</button>
 
 <div class="banner">
   <img src="banner.png">
@@ -402,9 +552,9 @@ color:white;
   <div class="card shadow">
     <div class="card-body">
       <h2 class="card-title">
-🎀คำนวณ Echoes🎀  
+🎀 คำนวณ Echoes 🎀  
 <br>
-💗by sayluvyaa💗
+💗 by sayluvyaa 💗
 </h2>
       <div class="mb-3">
         <label for="modeSelect" class="form-label">เลือกโหมดคำนวณ</label>
@@ -428,13 +578,13 @@ color:white;
  <div class="mb-3">
   <label class="form-label">จำนวนแพ็กพิเศษ</label>
   <input type="number" id="specialPack" class="form-control"
-  placeholder="576 Echoes ได้ 10 ลูก เช่น 1 แพ็ก">
+  placeholder="576 Echoes ได้ 10 ลูก เช่น 1">
 </div>
 
 <div class="mb-3">
   <label class="form-label">จำนวนลูกปกติที่ต้องการ</label>
   <input type="number" id="normalBalls" class="form-control"
-  placeholder="ลูกละ 96 Echoes เช่น 10 ลูก">
+  placeholder="ลูกละ 96 Echoes เช่น 10">
 </div>
 
 </div>
@@ -456,24 +606,44 @@ color:white;
 
 <button class="btn btn-primary w-100" onclick="calculate()">คำนวณ</button>
 
-      <div class="mt-4">
+   <div class="mt-4">
+
+<div id="resultBox">
+
   <h5>✨ ผลลัพธ์การคำนวณ</h5>
 
   <div id="result" class="bg-white p-3 border rounded"></div>
 
+</div>
+</div>
+
   <div class="container mt-4">
 
 <h4 class="text-center">🛍 Skin Gallery</h4>
-<p class="text-center skin-desc">เลือกสกินที่ต้องการ ระบบจะรวม Echoes ให้แล้วคำนวณสูตรเติมที่คุ้มที่สุด</p>
+<p class="text-center skin-desc">
+เลือกสกินที่ต้องการ ระบบจะรวม Echoes ให้แล้วคำนวณสูตรเติมที่คุ้มที่สุด
+</p>
 
-<div class="row" id="skinGallery"></div>
-
-<div class="text-center mt-3">
-<button class="btn btn-primary" onclick="calculateSkinWish()">
-✨ คำนวณ Skin Wish
-</button>
+<!-- 🔍 ช่องค้นหา -->
+<div class="mb-3">
+<input 
+type="text"
+id="skinSearch"
+class="form-control"
+placeholder="🔍 ค้นหา Skin..."
+onkeyup="searchSkin()">
 </div>
 
+<div id="skinGallery"></div>
+
+    <div class="pagination">
+<button onclick="changePage(-1)">ก่อนหน้า</button>
+
+<span id="pageNumbers"></span>
+
+<button onclick="changePage(1)">ถัดไป</button>
+</div>
+    
 <div class="text-center mt-2">
 <button class="btn btn-secondary" onclick="resetSkin()">
 ล้าง Skin
@@ -481,6 +651,12 @@ color:white;
 </div>
 
 <div id="skinResult" class="mt-3"></div>
+
+<div id="remainEchoBox" style="display:none; margin-top:10px;">
+<label class="form-label">กระดุมติดที่มีอยู่ในไอดี</label>
+<input type="number" id="remainEcho" class="form-control" placeholder="เช่น 500">
+<button class="btn btn-primary mt-2" onclick="recalculateSkin()">คำนวณใหม่</button>
+</div>
 
 </div>      
 </div>
@@ -495,6 +671,10 @@ color:white;
 </footer>
 
 <script>
+  function formatNum(num){
+  return num.toLocaleString("en-US");
+}
+  
   const echoTopup = { 66: 60, 203: 185, 335: 305, 759: 690 };
   const prices = { 66: 30, 203: 85, 335: 140, 759: 280 };
 
@@ -540,38 +720,103 @@ color:white;
     return options;
   }
 
-  function calculateButtons() {
-    let needed = parseInt(document.getElementById("echoesInput").value);
-    if (isNaN(needed) || needed <= 0) {
-      document.getElementById("result").innerText = "กรุณากรอกจำนวนกระดุมที่ถูกต้อง";
-      return;
-    }
-    let options = generateOptions("buttons", needed).filter(o=>o.echoes>=needed);
-    options.sort((a,b)=>a.price-b.price);
-    let best = options[0];
-    document.getElementById("result").innerHTML = `
-<p>💡 สูตรที่เลือก: ${best.desc}</p>
-<p>🧷 รวมทั้งหมด: ${best.echoes.toLocaleString()} กระดุม</p>
-<p>💸 ราคารวม: ${best.price.toLocaleString()} บาท</p>
-<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${best.topup.toLocaleString()}</p>`;
+  function findBetterOption(options, best, maxExtra = 10){
+
+  let candidates = options.filter(o =>
+    o.price > best.price &&
+    o.price <= best.price + maxExtra &&
+    o.echoes > best.echoes
+  );
+
+  if(candidates.length === 0) return null;
+
+  // เลือกตัวที่คุ้มสุด (echoes ต่อบาท)
+  candidates.sort((a,b)=>
+    (b.echoes/b.price) - (a.echoes/a.price)
+  );
+
+  return candidates[0];
+}
+
+function calculateButtons() {
+  let needed = parseInt(document.getElementById("echoesInput").value);
+
+  if (isNaN(needed) || needed <= 0) {
+    document.getElementById("result").innerText = "กรุณากรอกจำนวนกระดุมที่ถูกต้อง";
+    return;
   }
 
-  function calculateTopup() {
-    let neededTopup = parseInt(document.getElementById("echoesInput").value);
-    if (isNaN(neededTopup) || neededTopup <= 0) {
-      document.getElementById("result").innerText = "กรุณากรอกยอดเติมเสียงสะท้อนที่ถูกต้อง";
-      return;
-    }
-    let options = generateOptions("topup", neededTopup).filter(o=>o.topup>=neededTopup);
-    options.sort((a,b)=>a.price-b.price);
-    let best = options[0];
-      document.getElementById("result").innerHTML = `
-<p>💡 สูตรที่เลือก: ${best.desc}</p>
-<p>🧷 รวมทั้งหมด: ${best.echoes.toLocaleString()} กระดุม</p>
-<p>💸 ราคารวม: ${best.price.toLocaleString()} บาท</p>
-<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${best.topup.toLocaleString()}</p>`;
+  let options = generateOptions("buttons", needed).filter(o=>o.echoes>=needed);
+  options.sort((a,b)=>a.price-b.price);
+
+  let best = options[0];
+  let better = findBetterOption(options, best, 10);
+
+  let html = `
+  <p>💡 สูตรที่เลือก: ${best.desc}</p>
+  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+  `;
+
+  if(better){
+    html += `
+    <hr>
+    <p style="color:#ff4fa3;font-weight:600;">
+    🔥 เพิ่มเงินอีก ${better.price - best.price} บาท  
+    เพื่อได้ +${better.echoes - best.echoes} echoes
+    </p>
+
+    <p>✨ สูตรแนะนำ: ${better.desc}</p>
+    `;
   }
 
+  document.getElementById("result").innerHTML = html;
+}
+
+function calculateTopup() {
+  let neededTopup = parseInt(document.getElementById("echoesInput").value);
+  if (isNaN(neededTopup) || neededTopup <= 0) {
+    document.getElementById("result").innerText = "กรุณากรอกยอดเติมเสียงสะท้อนที่ถูกต้อง";
+    return;
+  }
+
+  let options = generateOptions("topup", neededTopup)
+                  .filter(o=>o.topup>=neededTopup);
+
+  options.sort((a,b)=>a.price-b.price);
+
+  let best = options[0];
+
+  // 🔥 เพิ่มตรงนี้
+  let better = findBetterOption(options, best, 10);
+
+  let html = `
+  <p>💡 สูตรที่เลือก: ${best.desc}</p>
+  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+  `;
+
+  if(better){
+    let diffPrice = better.price - best.price;
+    let diffEcho = better.echoes - best.echoes;
+
+    html += `
+    <hr>
+    <p style="color:#ff4fa3;font-weight:600;">
+    🔥 เพิ่มเงินอีก ${diffPrice} บาท  
+    เพื่อได้ +${diffEcho} echoes
+    </p>
+
+    <p>✨ สูตรแนะนำ: ${better.desc}</p>
+    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
+    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
+    `;
+  }
+
+  document.getElementById("result").innerHTML = html;
+}
   function calculateBudget() {
     let budget = parseInt(document.getElementById("echoesInput").value);
     if (isNaN(budget) || budget <= 0) {
@@ -580,14 +825,26 @@ color:white;
     }
     let options = generateOptions("budget", budget);
 
-    let lower = options.filter(o=>o.price<budget).sort((a,b)=>(budget-a.price)-(budget-b.price))[0];
-    let equal = options.reduce((best,o)=>Math.abs(o.price-budget)<Math.abs((best?.price||0)-budget)?o:best,null);
-    let higher = options.filter(o=>o.price>budget).sort((a,b)=>(a.price-budget)-(b.price-budget))[0];
+    let lower = options
+.filter(o=>o.price < budget)
+.sort((a,b)=> 
+   b.price - a.price || b.echoes - a.echoes
+)[0];
+    
+    let equal = options
+.filter(o=>o.price === budget)
+.sort((a,b)=> b.echoes - a.echoes)[0];
+    
+    let higher = options
+.filter(o=>o.price > budget)
+.sort((a,b)=> 
+   a.price - b.price || b.echoes - a.echoes
+)[0];
 
     let html = "<table class='table table-bordered'><thead><tr><th>ตัวเลือก</th><th>สูตร</th><th>ราคา</th><th>กระดุมรวม</th><th>ยอดเติมเสียงสะท้อน</th></tr></thead><tbody>";
     if (lower) html += `<tr><td>ต่ำกว่า</td><td>${lower.desc}</td><td>${lower.price} บาท</td><td>${lower.echoes}</td><td>${lower.topup}</td></tr>`;
-    if (equal) html += `<tr><td>ใกล้เคียง/เท่ากับ</td><td>${equal.desc}</td><td>${equal.price} บาท</td><td>${equal.echoes}</td><td>${equal.topup}</td></tr>`;
-    if (higher) html += `<tr><td>สูงกว่าเล็กน้อย</td><td>${higher.desc}</td><td>${higher.price} บาท</td><td>${higher.echoes}</td><td>${higher.topup}</td></tr>`;
+    if (equal) html += `<tr><td>เท่ากับ</td><td>${equal.desc}</td><td>${equal.price} บาท</td><td>${equal.echoes}</td><td>${equal.topup}</td></tr>`;
+    if (higher) html += `<tr><td>สูงกว่า</td><td>${higher.desc}</td><td>${higher.price} บาท</td><td>${higher.echoes}</td><td>${higher.topup}</td></tr>`;
     html += "</tbody></table>";
     document.getElementById("result").innerHTML = html;
   }
@@ -613,18 +870,15 @@ color:white;
   let best = options[0];
 
   // จัดรูปแบบแพ็กให้อ่านง่าย (มีเว้นวรรค)
-  let formattedDesc = best.desc
-      .replace(/x/g," x ")
-      .replace(/\s+/g," ")
-      .trim();
+  let formattedDesc = best.desc;
 
   let totalBalls = (specialPack * 10) + normalBalls;
 
   document.getElementById("result").innerHTML = `
-    <p>💡 สูตรที่เลือก: ${formattedDesc}</p>
-<p>🧷 รวมทั้งหมด: ${best.echoes.toLocaleString()} กระดุม</p>
-<p>💸 ราคารวม: ${best.price.toLocaleString()} บาท</p>
-<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${best.topup.toLocaleString()}</p>
+<p>💡 สูตรที่เลือก: ${formattedDesc}</p>
+<p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
 
     <hr>
 
@@ -632,8 +886,11 @@ color:white;
   `;
 }
   
-  function calculate() {
-  let mode = document.getElementById("modeSelect").value;
+function calculate() {
+
+document.getElementById("resultBox").classList.add("show");
+
+let mode = document.getElementById("modeSelect").value;
 
   if (mode === "buttons") calculateButtons();
   else if (mode === "topup") calculateTopup();
@@ -817,6 +1074,7 @@ if(totalEchoes===0){
 document.getElementById("skinResult").innerText="กรุณาเลือกสกิน";
 return;
 }
+document.getElementById("remainEchoBox").style.display="block";
 
 let options = generateOptions("buttons", totalEchoes)
                 .filter(o=>o.echoes>=totalEchoes);
@@ -824,6 +1082,7 @@ let options = generateOptions("buttons", totalEchoes)
 options.sort((a,b)=>a.price-b.price);
 
 let best = options[0];
+let better = findBetterOption(options, best, 10);
 
 document.getElementById("skinResult").innerHTML=`
 
@@ -835,23 +1094,84 @@ ${labels.map(l=>`<span class="badge bg-danger">${l}</span>`).join(" ")}
 
 <hr>
 
-<p>กระดุมที่ต้องใช้รวม: ${totalEchoes.toLocaleString()}</p>
-
+<p>กระดุมที่ต้องใช้รวม: ${formatNum(totalEchoes)}</p>
 <p>สูตรเติมคุ้มสุด: ${best.desc}</p>
-
-<p>รวมทั้งหมด: ${best.echoes.toLocaleString()} กระดุม</p>
-
-<p>ราคารวม: ${best.price.toLocaleString()} บาท</p>
-
-<p>ยอดเติมเสียงสะท้อนรวม: ${best.topup.toLocaleString()}</p>
+<p>รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+<p>ราคารวม: ${formatNum(best.price)} บาท</p>
+<p>ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+<p class="price-note">
+*เป็นเพียงราคาคาดการณ์ ในอนาคตอาจมีเปลี่ยนแปลง*
+</p>
 
 </div>
-
 `;
-
 }
 
-  function changeQty(btn,delta){
+function recalculateSkin(){
+
+  let remain = parseInt(document.getElementById("remainEcho").value) || 0;
+
+  let skins = document.querySelectorAll(".skin-data");
+
+  let totalEchoes = 0;
+  let labels = [];
+
+  skins.forEach(s=>{
+    let qty = parseInt(
+      s.previousElementSibling.querySelector(".qty").innerText
+    );
+
+    if(qty>0){
+      let echo = parseInt(s.dataset.echo);
+      let label = s.dataset.label;
+
+      totalEchoes += echo * qty;
+      labels.push(`${label} x${qty}`);
+    }
+  });
+
+  let needEchoes = totalEchoes - remain;
+  if(needEchoes < 0) needEchoes = 0;
+
+  let options = generateOptions("buttons", needEchoes)
+    .filter(o=>o.echoes>=needEchoes);
+
+  options.sort((a,b)=>a.price-b.price);
+
+  let best = options[0];
+
+  if(!best){
+    document.getElementById("skinResult").innerText = "ไม่ต้องเติมเพิ่ม";
+    return;
+  }
+
+  let better = findBetterOption(options, best, 10);
+
+  let html = `
+  <div>
+  <p><strong>Skin ที่เลือก</strong></p>
+  ${labels.map(l=>`<span class="badge bg-danger">${l}</span>`).join(" ")}
+
+  <hr>
+
+  <p>กระดุมที่ต้องใช้: ${formatNum(needEchoes)}</p>
+  <p>💡 สูตร: ${best.desc}</p>
+  <p>💸 ราคา: ${formatNum(best.price)} บาท</p>
+  `;
+
+  if(better){
+    html += `
+    <hr>
+    🔥 เพิ่ม ${better.price - best.price} บาท → ได้เพิ่ม ${better.echoes - best.echoes}
+    `;
+  }
+
+  html += `</div>`;
+
+  document.getElementById("skinResult").innerHTML = html;
+}
+
+function changeQty(btn,delta){
 
 let qtyEl = btn.parentElement.querySelector(".qty");
 
@@ -875,25 +1195,79 @@ document.getElementById("skinResult").innerHTML="";
 
 }
 
-  function loadSkins(){
+    const skins = [
 
-let gallery = document.getElementById("skinGallery");
+{name:"Skin S", echo:2888, img:"skins.png"},
+{name:"Skin S ลด 40%", echo:1733, img:"skins.png"},
+{name:"Skin S ลด 50%", echo:1444, img:"skins.png"},
+{name:"Skin S ลด 388🔴", echo:2500, img:"skins.png"},
+{name:"Skin S ลด 25%", echo:2158, img:"skins.png"},
+{name:"Skin S + Acces A + Character", echo:3288, img:"skins-accesa+cha.png"},
+{name:"Skin S + Acces S", echo:3268, img:"skins-access.png"},
+{name:"Skin S ลด 40% + Acces S", echo:3025, img:"skins-access.png"},
+{name:"Skin S + Acces A", echo:2688, img:"skins-accesa.png"},
+{name:"Skin S ลด 40% + Acces A", echo:2459, img:"skins-accesa.png"},
+{name:"Skin S ซื้อประดับ S/A แล้ว", echo:1963, img:"skins.png"},
+    
+{name:"Skin A", echo:1388, img:"skina.png"},
+{name:"Skin A ลด 40%", echo:833, img:"skina.png"},
+{name:"Skin A ลด 50%", echo:694, img:"skina.png"},
+{name:"Skin A ลด 388🔴", echo:1000, img:"skina.png"},
+{name:"Skin A ลด 15%", echo:1178, img:"skina.png"},
+{name:"Skin A 988echoes ", echo:988, img:"skina.png"},
+{name:"Skin A + Acces S", echo:2618, img:"skina-access.png"},
+{name:"Skin A ลด 40% + Acces S", echo:2342, img:"skina-access.png"},
+{name:"Skin A + Acces A", echo:1968, img:"skina-accesa.png"},
+{name:"Skin A ลด 40% + Acces A", echo:1685, img:"skina-accesa.png"},
+{name:"Skin A ซื้อประดับ S/A แล้ว", echo:1110, img:"skina.png"},
 
-skins.forEach(skin=>{
+{name:"Skin B", echo:318, img:"skinb.png"},
+{name:"Skin B", echo:288, img:"skinb.png"},
+{name:"Skin B Ivory Tower", echo:60, img:"skinb.png"},
+{name:"Skin C", echo:108, img:"skinb.png"},
+    
+{name:"Accessory S", echo:1888, img:"access.png"},
+{name:"Accessory A", echo:1068, img:"accesa.png"},
+{name:"Accessory A", echo:788, img:"accesa.png"},
+{name:"Accessory B", echo:258, img:"accesb.png"},
+{name:"Accessory B", echo:208, img:"accesb.png"},
+{name:"Acces S ซื้อสกิน S แล้ว", echo:1292, img:"access.png"},
+{name:"Acces A ซื้อสกิน S แล้ว", echo:726, img:"accesa.png"},
+{name:"Acces S ซื้อสกิน A แล้ว", echo:1509, img:"access.png"},
+{name:"Acces A ซื้อสกิน A แล้ว", echo:852, img:"accesa.png"},
+  
+{name:"Pet A", echo:888, img:"peta.png"},
+{name:"Pet A", echo:788, img:"peta.png"},
+{name:"Pet A", echo:710, img:"peta.png"},
+
+{name:"Pet B", echo:488, img:"petb.png"},
+{name:"Pet B", echo:388, img:"petb.png"},
+{name:"Pet B", echo:288, img:"petb.png"},
+{name:"Pet C", echo:158, img:"petb.png"},
+
+{name:"Room S", echo:4888, img:"rooms.png"},
+{name:"Room S ลด 20%", echo:3912, img:"rooms.png"},
+{name:"Room S ลด 25%", echo:3688, img:"rooms.png"},
+{name:"Room A", echo:3288, img:"rooma.png"},
+{name:"Room B", echo:968, img:"roomb.png"},
+];
+  
+function loadSkins(){
+  let gallery = document.getElementById("skinGallery");
+  gallery.innerHTML = ""; // ✅ เคลียร์ก่อน
+
+  skins.forEach(skin=>{
 
 gallery.innerHTML += `
 
-<div class="col-md-4 col-6 mb-3">
-<div class="card">
+<div class="skin-card" data-match="true">
 
-<div class="card-img-box">
 <img src="${skin.img}">
+
+<div class="skin-info">
+<div class="skin-name">${skin.name}</div>
+<div class="skin-price">${skin.echo} Echoes</div>
 </div>
-
-<div class="card-body text-center">
-
-<h6>${skin.name}</h6>
-<p>${skin.echo} Echoes</p>
 
 <div class="skin-qty">
 <button onclick="changeQty(this,-1)">−</button>
@@ -907,47 +1281,152 @@ data-label="${skin.name}">
 </div>
 
 </div>
-</div>
-</div>
 
 `;
-
 });
 
 }
 
-  const skins = [
-
-{name:"Skin S", echo:2888, img:"BlankSTierCard.png"},
-{name:"Skin S ลด 40%", echo:1733, img:"BlankSTierCard.png"},
-{name:"Skin A", echo:1388, img:"BlankATierCard.png"},
-{name:"Skin A ลด 40%", echo:833, img:"BlankATierCard.png"}
-
-];
-
-  window.onload = function(){
+window.onload = function(){
 
 let theme = localStorage.getItem("theme");
+let btn = document.querySelector(".dark-toggle");
 
 if(theme === "dark"){
-document.body.classList.add("dark-mode");
-document.querySelector(".dark-toggle").innerHTML="☀️";
+  document.body.classList.add("dark-mode");
+  if(btn) btn.innerHTML="☀️";
 }
 
 loadSkins();
-
+showPage(1);
 };
+  
+ function scrollToSkinResult(){
+  setTimeout(()=>{
+    document.getElementById("skinResult")
+    .scrollIntoView({behavior:"smooth"});
+  },300); // เพิ่ม delay นิด
+}
+  
+ function searchSkin(){
+
+let keyword = document.getElementById("skinSearch").value.toLowerCase();
+
+let skins = document.querySelectorAll(".skin-card");
+
+skins.forEach(function(card){
+
+let name = card.querySelector(".skin-name").innerText.toLowerCase();
+
+if(name.includes(keyword)){
+card.dataset.match = "true";
+}else{
+card.dataset.match = "false";
+}
+
+});
+
+showPage(1);
+
+}
+
+function scrollToTop(){
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+}
+  
+window.addEventListener("scroll", function(){
+const btn = document.querySelector(".top-btn");
+
+if(window.scrollY > 200){
+btn.classList.add("show");
+}else{
+btn.classList.remove("show");
+}
+});
+
+  // ===== Pagination Skin Gallery =====
+
+let currentPage = 1;
+let skinsPerPage = 10;
+
+function showPage(page){
+
+let skins = Array.from(document.querySelectorAll(".skin-card"))
+.filter(s => s.dataset.match !== "false");
+
+let totalPages = Math.ceil(skins.length / skinsPerPage);
+
+if(page < 1) page = 1;
+if(page > totalPages) page = totalPages;
+
+currentPage = page;
+
+document.querySelectorAll(".skin-card").forEach(s=>s.style.display="none");
+
+skins.forEach((skin,index)=>{
+
+let start = (page-1)*skinsPerPage;
+let end = start + skinsPerPage;
+
+if(index >= start && index < end){
+skin.style.display="flex";
+}
+
+});
+
+renderPageNumbers(totalPages);
+}
+
+function renderPageNumbers(totalPages){
+
+let container = document.getElementById("pageNumbers");
+container.innerHTML="";
+
+for(let i=1;i<=totalPages;i++){
+
+let btn=document.createElement("button");
+
+btn.innerText=i;
+
+if(i===currentPage){
+btn.classList.add("active");
+}
+
+btn.onclick=()=>showPage(i);
+
+container.appendChild(btn);
+
+}
+
+}
+
+function changePage(step){
+showPage(currentPage + step);
+}
+
+  
 </script>
 
-  <a href="https://www.facebook.com/share/1CEyAyv53R/?mibextid=wwXIfr"
-   target="_blank"
-   class="floating-contact">
-   💬 ติดต่อสั่งเติมกับร้าน
+<button class="dark-toggle" onclick="toggleDarkMode()">🌙</button>
+  
+<button class="top-btn" onclick="scrollToTop()">⬆️</button>
+
+<div class="floating-menu">
+
+<a href="#" onclick="calculateSkinWish();scrollToSkinResult();return false;">
+✨ คำนวณ Skin Gallery
 </a>
+
+<a href="https://www.facebook.com/share/1CEyAyv53R/?mibextid=wwXIfr"
+target="_blank">
+💬 ติดต่อสั่งเติมกับร้าน
+</a>
+
+</div>
   
 </body>
 </html>
-
-
-
 
