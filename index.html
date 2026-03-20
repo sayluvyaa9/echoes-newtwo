@@ -676,7 +676,7 @@ onkeyup="searchSkin()">
 }
   
   const echoTopup = { 66: 60, 203: 185, 335: 305, 759: 690 };
-  const prices = { 66: 30, 203: 85, 335: 140, 759: 280 };
+  const prices = { 66: 30, 203: 90, 335: 145, 759: 285 };
 
   function generateOptions(mode, target) {
     let options = [];
@@ -699,10 +699,10 @@ onkeyup="searchSkin()">
 
             // ส่วนลดราคาพิเศษสำหรับแพ็กใหญ่
             let price759 = prices[759];
-            if (c759 >= 25) {
-              price759 = 275;
-            } else if (c759 >= 15) {
-              price759 = 278;
+            if (c759 >= 30) {
+              price759 = 280;
+            } else if (c759 >= 20) {
+              price759 = 283;
             }
 
             let price = c66*prices[66] + c203*prices[203] + c335*prices[335] + c759*price759;
