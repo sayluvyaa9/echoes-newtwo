@@ -853,7 +853,7 @@ function calculateTopup() {
     document.getElementById("result").innerHTML = html;
   }
 
- function calculateGacha() {
+function calculateGacha() {
 
   let specialPack = parseInt(document.getElementById("specialPack").value) || 0;
   let normalBalls = parseInt(document.getElementById("normalBalls").value) || 0;
@@ -871,23 +871,54 @@ function calculateTopup() {
                   .filter(o => o.echoes >= echoesNeeded);
 
   options.sort((a,b)=>a.price-b.price);
+
   let best = options[0];
 
-  // จัดรูปแบบแพ็กให้อ่านง่าย (มีเว้นวรรค)
-  let formattedDesc = best.desc;
+  // 🔥 ตัวเลือกเพิ่มเงิน
+  let better = findBetterOption(options, best, 10);
 
   let totalBalls = (specialPack * 10) + normalBalls;
 
-  document.getElementById("result").innerHTML = `
-<p>💡 สูตรที่เลือก: ${formattedDesc}</p>
-<p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
-<p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
-<p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
+  let html = `
+  <p>💡 สูตรที่เลือก: ${best.desc}</p>
+  <p>🔴 รวมทั้งหมด: ${formatNum(best.echoes)} กระดุม</p>
+  <p>💸 ราคารวม: ${formatNum(best.price)} บาท</p>
+  <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(best.topup)}</p>
 
+  <hr>
+
+  <p>จำนวนลูกกาชารวม: <strong>${totalBalls}</strong> ลูก</p>
+  `;
+
+  // 🔥 เพิ่ม option คุ้มกว่า
+  if(better){
+
+    let diffPrice = better.price - best.price;
+    let diffEcho = better.echoes - best.echoes;
+
+    // 🎯 คิดจำนวนลูกกาชาที่เพิ่ม
+    let extraBalls = Math.floor(diffEcho / 96);
+
+    html += `
     <hr>
 
-    <p>จำนวนลูกกาชารวม: <strong>${totalBalls}</strong> ลูก</p>
-  `;
+    <p style="color:#ff4fa3;font-weight:600;">
+    🔥 เพิ่มเงินอีก ${diffPrice} บาท  
+    เพื่อได้ +${diffEcho} echoes
+    </p>
+
+    <p style="font-weight:600;">
+    🎯 ได้เพิ่ม +${extraBalls} ลูกกาชา
+    </p>
+
+    <p>✨ สูตรแนะนำ: ${better.desc}</p>
+    <p>🔴 รวมทั้งหมด: ${formatNum(better.echoes)} กระดุม</p>
+    <p>💸 ราคารวม: ${formatNum(better.price)} บาท</p>
+    <p>🔊 ยอดเติมเสียงสะท้อนรวม: ${formatNum(better.topup)}</p>
+    `;
+  }
+
+  document.getElementById("result").innerHTML = html;
 }
   
 function calculate() {
