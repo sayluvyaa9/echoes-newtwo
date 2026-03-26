@@ -723,18 +723,21 @@ if (isExactSmallPack) {
 }
 
 // ==========================
-// 🚫 2. กัน spam แพ็กเล็ก
-// ==========================
+// 🚫 2. กัน spam แพ็กเล็ก (แก้แล้ว)
 let smallCount = c66 + c203 + c335;
-if (smallCount >= 3 && c759 === 0) continue;
+
+// อนุญาตให้ใช้ 3 แพ็ก ถ้ามัน "ถึง target"
+if (smallCount >= 3 && c759 === 0 && echoes < target) continue;
 
 // ==========================
-// 💰 3. กรองความคุ้ม
-// ==========================
+// 💰 3. กรองความคุ้ม (แก้แล้ว)
 let value = echoes / price;
 let baseValue = 759 / price759;
 
-if (value < baseValue * 0.95) continue;
+// อนุญาตสูตรที่ "ใกล้ target"
+let isNearTarget = echoes >= target && echoes <= target + 10;
+
+if (!isNearTarget && value < baseValue * 0.95) continue;
 
 // ==========================
 // ✅ 4. เงื่อนไข mode เดิม
